@@ -1,12 +1,12 @@
 
-Vue.component('route-list', {
+Vue.component('route-buildLogList', {
 	data() {
 		return { 
 			buildLogs: []
 		}
 	},
 	methods: {
-		redirect(buildLOg) {
+		redirect(buildLog) {
 			this.$router.push({
 				path: `/buildLog/${buildLog.id}`
 			});
@@ -16,6 +16,8 @@ Vue.component('route-list', {
 		fetch('/api/buildLogs')
 			.then(res => res.json())
 			.then(data => {
+                console.log("result from /api/buildLogs:");
+                console.log(data);
 				this.buildLogs = data.logs;
 			})
 	},
@@ -27,16 +29,13 @@ Vue.component('route-list', {
 			</div>
 
 			<div>
-				<div class="well" v-for="buildLog in buildLogs"> 
-					<div style="text-align: center;">
+				<div class="well" v-for="buildLog in buildLogs" > 
+					<div style="text-align: center;"  >
 						<h4>
-						<span>BuildLog: {{ buildLog.id }}</span>
+						<span v-on:click="redirect(buildLog)">
+                            <a>{{ buildLog.name }}{{ buildLog.date }}</a>
+                        </span>
 						</h4>
-						<div v-for="env_var in buildLog.environment">
-							<div style="display:inline-block"> 
-                                {{env_var.time}}
-							</div>
-						</div>
 					</div>
 				</div>
 			</div>

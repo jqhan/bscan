@@ -1,7 +1,7 @@
 const routes = [
 	{ path: '/', redirect: '/buildLogs' },
-	{ path: '/buildLogs', component: Vue.component('route-list') },
-	{ path: '/buildLog/:buildLogID', component: Vue.component('route-booking') }
+	{ path: '/buildLogs', component: Vue.component('route-buildLogList') },
+	{ path: '/buildLog/:buildLogID', component: Vue.component('route-buildLog') }
 ];
 
 // Create VueRouter

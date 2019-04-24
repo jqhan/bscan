@@ -8,6 +8,8 @@ router.get('/buildLogs', function (req, res) {
 });
 
 router.get('/buildLog/:buildLogID', function (req, res) {
+  console.log("API recieved:");
+  console.log(req.params);
   const buildLog = model.findBuildLog(req.params.buildLogID);
   res.json({ log: buildLog });
 });

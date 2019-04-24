@@ -10,6 +10,7 @@ app.use('/api', router);
 
 // Demo calls to model
 const model = require('./model.js');
+model.readBuildLogs();
 
 listen(port, () => {
   console.log("server listening on port", port);
