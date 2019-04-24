@@ -1,0 +1,18 @@
+{
+    "id": "123",
+    "date": "2019-04-30",
+    "name": "luttu",
+    "env": [
+        {
+            "CC": "gcc"
+        },
+        {
+            "PATH": "asdf"
+        },
+        {
+            "gcc-ver": "71"
+        }
+    ],
+    "command": "gcc asd.c -o asd.out",
+    "output": "Build Failed!"
+}
