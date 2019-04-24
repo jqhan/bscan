@@ -1,7 +1,6 @@
 require('better-logging')(console);
 const path = require('path');
 const expressSession = require('express-session');
-const sharedSession = require('express-socket.io-session');
 const express = require('express');
 const http = require('http');
 
@@ -51,7 +50,6 @@ module.exports = () => {
         saveUninitialized: true,
     });
     app.use(session);
-    io.use(sharedSession(session));
 
     return {
         app,

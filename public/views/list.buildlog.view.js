@@ -13,7 +13,7 @@ Vue.component('route-list', {
 		}
 	},
 	created() {
-		fetch('/api/buildLogList')
+		fetch('/api/buildLogs')
 			.then(res => res.json())
 			.then(data => {
 				this.buildLogs = data.logs;
