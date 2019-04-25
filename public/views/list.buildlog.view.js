@@ -1,4 +1,3 @@
-
 Vue.component('route-buildLogList', {
 	data() {
 		return { 

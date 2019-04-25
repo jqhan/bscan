@@ -7,6 +7,11 @@ router.get('/buildLogs', function (req, res) {
   res.json({ logs: buildLogs });
 });
 
+router.get('/weeklyChartData', function (req, res) {
+  const chartData = model.getWeeklyChartData();
+  res.json({ data: chartData });
+});
+
 router.get('/buildLog/:buildLogID', function (req, res) {
   console.log("API recieved:");
   console.log(req.params);

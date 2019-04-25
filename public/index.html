@@ -13,6 +13,8 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js"></script>
+
     <!-- #endregion -->
 
     <link rel="stylesheet/css" type="text/css" href="style.css">
@@ -37,6 +39,7 @@
                 <div class="collapse navbar-collapse" id="navbar-brand-centered">
                     <ul class="nav navbar-nav">
                         <li v-on:click="redirect('/buildLogs')"><a style="cursor: pointer;">Build logs</a></li>
+                        <li v-on:click="redirect('/statistics')"><a style="cursor: pointer;">Statistics</a></li>
                     </ul>
                 </div><!-- /.navbar-collapse -->
             </div><!-- /.container-fluid -->
@@ -47,7 +50,8 @@
     <!-- #region Import app -->
     <script src="./views/buildlog.view.js"></script>
     <script src="./views/list.buildlog.view.js"></script>
-    <script src="./app.js"></script>
+    <script src="./views/statistics.view.js"></script>
+    <script type="module" src="./app.js"></script>
     <!-- #endregion -->
 </body>
 

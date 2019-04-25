@@ -1,6 +1,6 @@
 {
     "id": "133",
-    "date": "2019-04-23",
+    "date": "2019-04-22",
     "name": "oscarros",
     "env": [
         {
@@ -13,7 +13,7 @@
             "gcc-ver": "71"
         }
     ],
-    "time": 55,
+    "time": 50,
     "command": "gcc -o PWD run pwd docker -it",
     "output": "BIG FAIL, very bad input! what are u doing?? :^)"
 }

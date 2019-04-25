@@ -1,6 +1,9 @@
+//import home from './views/home'
+
 const routes = [
 	{ path: '/', redirect: '/buildLogs' },
 	{ path: '/buildLogs', component: Vue.component('route-buildLogList') },
+	{ path: '/statistics', component: Vue.component('route-statistics')},
 	{ path: '/buildLog/:buildLogID', component: Vue.component('route-buildLog') }
 ];
 

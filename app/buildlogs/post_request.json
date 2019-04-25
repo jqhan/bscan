@@ -1,6 +1,6 @@
 {
     "id": "123",
-    "date": "2019-04-30",
+    "date": "2019-04-21",
     "name": "luttu",
     "env": [
         {
@@ -13,6 +13,7 @@
             "gcc-ver": "71"
         }
     ],
+    "time": 40,
     "command": "gcc asd.c -o asd.out",
     "output": "Build Failed!"
 }
