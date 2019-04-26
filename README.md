@@ -13,3 +13,19 @@ We're inspired by the [build scans](https://gradle.com/build-scans/) that Gradle
 
 
 
+### Installation 
+
+#### Requirements 
+* [python 3.7](https://www.python.org/downloads/)
+* pipenv
+  ```
+  pip install pipenv
+  ```
+* [node](https://nodejs.org/en/)
+
+To install all dependencies, run following:
+```
+pipenv install
+
+npm install
+```

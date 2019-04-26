@@ -19,4 +19,20 @@ router.get('/buildLog/:buildLogID', function (req, res) {
   res.json({ log: buildLog });
 });
 
+router.post('/buildLog/add', function (req, res) {
+  console.log("API recieved:");
+  model.addLog(JSON.stringify(req.body)).then(function (value) {
+    console.log('value :', value);
+    res.json({ url: 'http://localhost:8989/#/buildLog/' + value });
+  })
+  .catch(err => {
+    if (err.length > 0) {
+      
+      res.status(500).send(err);
+    } else {
+      res.status(500).send("Server Error");
+    }
+  });
+});
+
 module.exports = router;

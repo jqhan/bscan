@@ -4,23 +4,21 @@
 const BuildLog = require('./models/buildlog.model');
 
 const buildLogs = [];
-
+const path = require('path');
+const fs = require('fs');
+const directoryPath = path.join(__dirname, 'buildlogs');
 
 exports.readBuildLogs = () => {
-
-	const path = require('path');
-	const fs = require('fs');
-	const directoryPath = path.join(__dirname, 'buildlogs');
 
 	fs.readdir(directoryPath, function (err, files) {
 		if (err) {
 			return console.log('Unable to scan directory: ' + err);
-		} 
+		}
 		files.forEach(function (filename) {
-            let rawdata = fs.readFileSync(directoryPath + "/" + filename); 
-		    const buildLog = JSON.parse(rawdata);  
-            buildLogs.push(buildLog);
-			console.log(buildLog.id); 
+			let rawdata = fs.readFileSync(directoryPath + "/" + filename);
+			const buildLog = JSON.parse(rawdata);
+			buildLogs.push(buildLog);
+			console.log(buildLog.id);
 		});
 	});
 };
@@ -29,9 +27,45 @@ exports.readBuildLogs = () => {
 exports.getBuildLogs = () => buildLogs;
 
 exports.findBuildLog = (id) => {
-   return buildLogs.find(function(log) {
-         return log.id == id;
-   });
+	return buildLogs.find(function (log) {
+		return log.id == id;
+	});
+}
+
+function generateNewId() {
+	return new Promise(function (resolve, reject) {
+		var maxId = -1;
+		buildLogs.forEach(function (value, index) {
+			if (parseInt(value.id, 10) > maxId) {
+				maxId = parseInt(value.id, 10);
+			}
+		});
+		var newId = parseInt(maxId, 10) + 1;
+		resolve(newId);
+	});
+}
+
+exports.addLog = (body) => {
+	return new Promise(function (resolve, reject) {
+		generateNewId().then(function (value) {
+			var log = JSON.parse(body);
+			log['id'] = value.toString();
+			fs.writeFile("buildlogs/" + log.command.toString().split(' ')[0] + "-" + (log.user).toString() + "-" + value.toString() + ".json", JSON.stringify(log), (err) => {
+				if (err) {
+					console.log(err);
+					reject(new Error("Write to log file failed"));
+				} else {
+					console.log("Successfully Written to File:  buildlogs/" + log.command.toString().split(' ')[0] + "-" + (log.user).toString() + "-" + value.toString() + ".json");
+					resolve(value);
+					buildLogs.push(log);
+				}
+			});
+		})
+			.catch(err => {
+				console.error(err);
+			});
+
+	});
 }
 
 exports.getWeeklyChartData = () => {
