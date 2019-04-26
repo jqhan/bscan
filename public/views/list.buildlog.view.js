@@ -1,7 +1,8 @@
 Vue.component('route-buildLogList', {
     data() {
         return {
-            buildLogs: []
+            buildLogs: [],
+            dataTable: null
         }
     },
     methods: {
@@ -15,17 +16,23 @@ Vue.component('route-buildLogList', {
         fetch('/api/buildLogs')
             .then(res => res.json())
             .then(data => {
-                console.log("result from /api/buildLogs:");
-                console.log(data);
                 this.buildLogs = data.logs;
             })
     },
     updated() {
-        console.log($('#buildLogTable'));
-        $('#buildLogTable').DataTable({
-            "ordering": true
-        });
+        this.dataTable = $('#buildLogTable').DataTable({});
+
         $('.dataTables_length').addClass('bs-select');
+        this.buildLogs.forEach(buildLog => {
+			const buildLogName = buildLog.command.split(' ')[0] + 
+							"-" + buildLog.name + "-" +
+							buildLog.date;
+            this.dataTable.row.add([
+				'<a href="javascript:void(0)">' + buildLogName + '</a>',
+				buildLog.name,
+				buildLog.date
+            ]).draw(false);
+        })
         console.log(this);
     },
     mounted() {},
@@ -39,12 +46,7 @@ Vue.component('route-buildLogList', {
 					<th class="th-sm">Date</th>
 				</tr>
 			</thead>
-			<tbody v-for="buildLog in buildLogs">
-				<tr>
-					<td>{{buildLog.command.split(' ')[0]}}-{{buildLog.name}}-{{buildLog.date}}</td>
-					<td>{{buildLog.name}}</td>
-					<td>{{buildLog.date}}</td>
-				</tr>
+			<tbody v-for="buildLog in buildLogs" v-on:click="redirect(buildLog)">
 			</tbody>
 		</table>	
 	</div>
