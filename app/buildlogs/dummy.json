@@ -1,7 +1,8 @@
 {
     "id": "133",
     "date": "2019-04-23",
-    "name": "oscarros",
+    "succeeded": false,
+    "name": "failman",
     "env": [
         {
             "CC": "gcc pwd pwd PWD ls PWD"

@@ -1,6 +1,7 @@
 {
     "id": "133",
     "date": "2019-04-21",
+    "succeeded": true,
     "name": "oscarros",
     "env": [
         {

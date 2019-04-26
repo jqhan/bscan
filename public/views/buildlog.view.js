@@ -6,6 +6,13 @@ Vue.component('route-buildLog', {
         }
     },
     methods: {
+        getExitCodeText() {
+            if (this.buildLog.succeeded === true) {
+                return "<font color=\"green\">Successful build.</font>";
+            } else {
+                return "<font color=\"red\">Failed build.</font>";
+            }
+        }
     },
     created() {
         fetch(`/api/buildLog/${this.buildLogID}`)
@@ -20,6 +27,8 @@ Vue.component('route-buildLog', {
     <div class="container">
         <section class="col-md-10 col-md-offset-1">
             <h1>{{ buildLog.name }} {{ buildLog.date }}</h1>
+            <div v-html="getExitCodeText()"></div>
+            <br />
             Command: {{buildLog.command}}
             <br />
             Output: {{buildLog.output}}

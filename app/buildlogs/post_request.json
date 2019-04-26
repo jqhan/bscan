@@ -1,6 +1,7 @@
 {
     "id": "123",
     "date": "2019-04-21",
+    "succeeded": false,
     "name": "luttu",
     "env": [
         {
