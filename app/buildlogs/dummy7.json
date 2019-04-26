@@ -1,7 +1,7 @@
 {
     "id": "133",
     "date": "2019-04-25",
-    "name": "oscarros",
+    "user": "oscarros",
     "env": [
         {
             "CC": "gcc pwd pwd PWD ls PWD"

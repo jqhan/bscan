@@ -7,8 +7,13 @@ router.get('/buildLogs', function (req, res) {
   res.json({ logs: buildLogs });
 });
 
-router.get('/weeklyChartData', function (req, res) {
-  const chartData = model.getWeeklyChartData();
+router.get('/weeklyChartDataCombinedAverage', function (req, res) {
+  const chartData = model.getWeeklyChartDataCombinedAverage();
+  res.json({ data: chartData });
+});
+
+router.get('/weeklyChartDataIndividualAverage', function (req, res) {
+  const chartData = model.getWeeklyChartDataIndividualAverage();
   res.json({ data: chartData });
 });
 

@@ -25,11 +25,11 @@ Vue.component('route-buildLogList', {
         $('.dataTables_length').addClass('bs-select');
         this.buildLogs.forEach(buildLog => {
 			const buildLogName = buildLog.command.split(' ')[0] + 
-							"-" + buildLog.name + "-" +
+							"-" + buildLog.user + "-" +
 							buildLog.date;
             this.dataTable.row.add([
 				'<a href="javascript:void(0)">' + buildLogName + '</a>',
-				buildLog.name,
+				buildLog.user,
 				buildLog.date
             ]).draw(false);
         })

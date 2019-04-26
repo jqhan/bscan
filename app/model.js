@@ -72,14 +72,14 @@ exports.addLog = (body) => {
     });
 }
 
-exports.getWeeklyChartData = () => {
+exports.getWeeklyChartDataCombinedAverage = () => {
     var data = [];
     var labels = [];
     var date = new Date();
     for (var i = 0; i < 7; i++) {
         var dateStr = date.toISOString().slice(0, 10);
         console.log(dateStr);
-        data.push(this.getAverageBuildTime(dateStr));
+        data.push(this.getAverageBuildTimeByDate(dateStr));
         labels.push(dateStr);
         date.setDate(date.getDate() - 1);
     }
@@ -90,20 +90,58 @@ exports.getWeeklyChartData = () => {
     };
 }
 
-exports.getAverageBuildTime = (date) => {
+exports.getWeeklyChartDataIndividualAverage = () => {
+    var data = [];
+    var labels = [];
+    var date = new Date();
+    var users = new Set();
+    buildLogs.forEach(function(log) {
+        users.add(log.user);
+    });
+    var self = this; // Context is different in forEach anon func
+    users.forEach(function(user) {
+        console.log(user);
+        var avg = self.getAverageBuildTimeByUser(user);
+        data.push(avg);
+        labels.push(user);
+    });
+    return {
+        data: data,
+        labels: labels
+    };
+}
+
+exports.getAverageBuildTimeByUser = (user) => {
     var timeSum = 0;
     var amountOfLogsOnThatDate = 0;
     buildLogs.forEach(function(log) {
         if (log.succeeded === true) {
             // YYYY-MM-DD = 10 characters
-            if (log.date.substring(0, 10) == date.substring(0, 10)) {
+            if (log.user === user) {
                 timeSum += log.time;
                 amountOfLogsOnThatDate += 1;
             }
         }
     });
     if (amountOfLogsOnThatDate == 0) {
-        console.log("LOGS DATE = 0");
+        return 0;
+    }
+    return timeSum / amountOfLogsOnThatDate;
+}
+
+exports.getAverageBuildTimeByDate = (date) => {
+    var timeSum = 0;
+    var amountOfLogsOnThatDate = 0;
+    buildLogs.forEach(function(log) {
+        if (log.succeeded === true) {
+            // YYYY-MM-DD = 10 characters
+            if (log.date.substring(0, 10) === date.substring(0, 10)) {
+                timeSum += log.time;
+                amountOfLogsOnThatDate += 1;
+            }
+        }
+    });
+    if (amountOfLogsOnThatDate == 0) {
         return 0;
     }
     return timeSum / amountOfLogsOnThatDate;
