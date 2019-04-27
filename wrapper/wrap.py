@@ -40,6 +40,7 @@ def post_results(results, API_ENDPOINT):
         "env": results["env"],
         "dependencies": results["dependencies"],
         "command": results["command"],
+        "succeeded": results["succeeded"],
         "output": results["output"],
         "time": results["time"]
     }
@@ -66,6 +67,7 @@ def run_commands(command, config):
     results = {
         "time": -1,
         "command": (' ').join(command).strip(),
+        "succeeded": False,
         "output": "",
         "user": "",
         "env": [],
@@ -81,8 +83,10 @@ def run_commands(command, config):
     if output.returncode == 0:
         print(output.stdout)
         results["output"] = str(output.stdout)
+        results["succeeded"] = True
     else:
         results["output"] = str(output.stderr)
+        results["succeeded"] = False
         print(output.stderr)
 
     whoami = subprocess.run('whoami', stdout=subprocess.PIPE, shell=True,
