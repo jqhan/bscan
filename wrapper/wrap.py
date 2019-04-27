@@ -7,75 +7,144 @@ from datetime import datetime
 import requests
 import time
 
-API_ENDPOINT = "http://localhost:8989/api/buildLog/add"
-environment_vars = ['CC']
-versions_vars = ['react', 'g++']
 
+# Tries to read config file, if it can't find one, return a default config based on c-compilation
+def read_config():
+    try:
+        file = open("wrap_config.json", 'r')
+        if file.mode != 'r':
+            return config
+        return json.loads(file.read())
+    except:
+        return {
+            "api_endpoint": "http://localhost:8989/api/buildLog/add",
+            "env-variables": [
+                "CC"
+            ],
+            "versions": [
+                "gcc",
+            ],
+            "dependency-commands": [
+                "gcc -M ../sample_programs/*.c"
+            ]
+        }
 
-command = sys.argv
-command.pop(0)
+#perform POST request with results to the server
+def post_results(results, API_ENDPOINT):
 
-# run the command
-start = time.time()
-output = subprocess.run(command, stdout=subprocess.PIPE, shell=True,
-                        stderr=subprocess.PIPE, universal_newlines=True)
-end = time.time()
+    post_request = {
+        "id": "",
+        "date": str(datetime.now()).split('.')[0].replace(' ', '-'),
+        "user": results["user"],
+        "env": results["env"],
+        "dependencies": results["dependencies"],
+        "command": results["command"],
+        "output": results["output"],
+        "time": results["time"]
+    }
 
-# run whoami
-whoami = subprocess.run('whoami', stdout=subprocess.PIPE, shell=True,
-                        stderr=subprocess.PIPE, universal_newlines=True)
+    json_obj = json.loads(json.dumps(post_request))
 
-post_request = {"id": "", "date": "", "user": "",
-                "env": [], "command": "", "output": "", "time": round(end-start, 4)}
+    r = requests.post(url=API_ENDPOINT, json=json_obj, headers={
+        "content-type": "application/json"})
+    return r
 
-# populate the post request
-for x in environment_vars:
-    if x in os.environ:
-        post_request["env"].append({x: str(os.environ[x])})
+# Extract environment variables
+def extract_environment_vars(environment_vars):
+    vars = []
+    for x in environment_vars:
+        if x in os.environ:
+            vars.append({x: str(os.environ[x])})
 
-for x in versions_vars:
-    version = subprocess.run(x + ' --version', shell=True, stdout=subprocess.PIPE,
-                             stderr=subprocess.PIPE, universal_newlines=True)
-    if version.returncode == 0:
-        post_request["env"].append(
-            {x + "-version": str(version.stdout).split('\n', 1)[0]})
+    return vars
+
+# Run all of the commands defined in the config and passed to the wrap
+def run_commands(command, config):
+    results = {
+        "time": -1,
+        "command": (', ').join(command).strip(),
+        "output": "",
+        "user": "",
+        "env": [],
+        "dependencies": []
+    }
+    start = time.time()
+    output = subprocess.run(command, stdout=subprocess.PIPE, shell=True,
+                            stderr=subprocess.PIPE, universal_newlines=True)
+    end = time.time()
+
+    results["time"] = round(end-start, 4)
+
+    if output.returncode == 0:
+        print(output.stdout)
+        results["output"] = str(output.stdout)
     else:
-        post_request["env"].append(
-            {x + "-version": str(version.stderr).split('\n', 1)[0]})
-post_request["date"] = str(datetime.now()).split('.')[0].replace(' ', '-')
+        results["output"] = str(output.stderr)
+        print(output.stderr)
 
+    whoami = subprocess.run('whoami', stdout=subprocess.PIPE, shell=True,
+                            stderr=subprocess.PIPE, universal_newlines=True)
+    if whoami.returncode == 0:
+        results["user"] = str(whoami.stdout[:-1])
 
-if whoami.returncode == 0:
-    post_request["user"] = str(whoami.stdout[:-1])
+    if "versions" in config:
+        for x in config["versions"]:
+            version = subprocess.run(x + ' --version', shell=True, stdout=subprocess.PIPE,
+                                     stderr=subprocess.PIPE, universal_newlines=True)
+            if version.returncode == 0:
+                results["env"].append(
+                    {x + "-version": str(version.stdout).split('\n', 1)[0]})
+            else:
+                results["env"].append(
+                    {x + "-version": str(version.stderr).split('\n', 1)[0]})
 
-if output.returncode == 0:
-    print(output.stdout)
-    post_request["output"] = str(output.stdout)
-else:
-    post_request["output"] = str(output.stderr)
-    print(output.stderr)
+    if "dependency-commands" in config:
+        for x in config["dependency-commands"]:
+            dep = subprocess.run(x, shell=True, stdout=subprocess.PIPE,
+                                 stderr=subprocess.PIPE, universal_newlines=True)
+            if dep.returncode == 0:
+                results["dependencies"].append(
+                    {x: str(dep.stdout)})
+            else:
+                results["dependencies"].append(
+                    {x: str(dep.stderr)})
 
-command_str = ''
-for com in command:
-    command_str = command_str + " " + com
-post_request["command"] = command_str[1:]
+    return results
 
-json_obj = json.loads(json.dumps(post_request))
-#print(post_request)
-r = requests.post(url=API_ENDPOINT, json=json_obj, headers={
-                  "content-type": "application/json"})
-print(r.status_code)
+# entrypoint method for the wrap
+def run():
 
-if r.status_code == 200:
-    print("------------------------------------Build wrapper------------------------------------")
-    print("log has been pushed!")
-    print("url to your build log: " + json.loads(r.content)['url'])
-    print("-------------------------------------------------------------------------------------")
-else:
-    print("------------------------------------Build wrapper------------------------------------")
-    print("ERROR")
-    print("message: " + str(r.content))
-    print("-------------------------------------------------------------------------------------")
+    config = read_config()
+    if "env-variables" in config:
+        environment_vars = config["env-variables"]
+    else: 
+        environment_vars = []
 
+    command = sys.argv
+    command.pop(0)
 
+    # run the commands
+    results = run_commands(command, config)
 
+    env_vars = extract_environment_vars(environment_vars)
+    results["env"].extend(env_vars)
+
+    if "api_endpoint" in config:
+        r = post_results(results, config["api_endpoint"])
+    else:
+        print("WARNING: no api endpoint provided")
+        print("tries with default endpoint: http://localhost:8989/api/buildLog/add")
+        r = post_results(results, "http://localhost:8989/api/buildLog/add")
+
+    if r.status_code == 200:
+        print("------------------------------------Build wrapper------------------------------------")
+        print("Server responded: " + str(r.status_code))
+        print("log has been pushed!")
+        print("url to your build log: " + json.loads(r.content)['url'])
+        print("-------------------------------------------------------------------------------------")
+    else:
+        print("------------------------------------Build wrapper------------------------------------")
+        print("Server responded: " + str(r.status_code))
+        print("ERROR")
+        print("message: " + str(r.content))
+        print("-------------------------------------------------------------------------------------")

@@ -44,10 +44,10 @@ exports.generateNewId = () => {
 
 exports.addLog = (body) => {
     return new Promise(function(resolve, reject) {
-        generateNewId().then(function(value) {
+        exports.generateNewId().then(function(value) {
                 var log = JSON.parse(body);
                 log['id'] = value.toString();
-                fs.writeFile("buildlogs/" +
+                fs.writeFile("app/buildlogs/" +
                         log.command.toString().split(' ')[0] +
                         "-" + (log.user).toString() + "-" +
                         value.toString() +
@@ -56,7 +56,7 @@ exports.addLog = (body) => {
                         console.log(err);
                         reject(new Error("Write to log file failed"));
                     } else {
-                        console.log("Successfully Written to File:  buildlogs/" +
+                        console.log("Successfully Written to File:  app/buildlogs/" +
                                 log.command.toString().split(' ')[0] +
                                 "-" + (log.user).toString() + "-" +
                                 value.toString() + ".json");

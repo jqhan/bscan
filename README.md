@@ -28,4 +28,6 @@ To install all dependencies, run following:
 pipenv install
 
 npm install
+
+pip install wrapper/
 ```
