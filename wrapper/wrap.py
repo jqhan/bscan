@@ -16,6 +16,7 @@ def read_config():
             return config
         return json.loads(file.read())
     except:
+        print("Did not find any config file, using default")
         return {
             "api_endpoint": "http://localhost:8989/api/buildLog/add",
             "env-variables": [
@@ -55,14 +56,13 @@ def extract_environment_vars(environment_vars):
     for x in environment_vars:
         if x in os.environ:
             vars.append({x: str(os.environ[x])})
+        else:
+            vars.append({x: "NOT DECLARED"})
 
     return vars
 
 # Run all of the commands defined in the config and passed to the wrap
 def run_commands(command, config):
-    com_str = (' ').join(command).strip()
-    print("ASDASDASDSA")
-    print(com_str)
     results = {
         "time": -1,
         "command": (' ').join(command).strip(),
@@ -116,7 +116,6 @@ def run_commands(command, config):
 
 # entrypoint method for the wrap
 def run():
-    print("TESTSTETS")
     config = read_config()
     if "env-variables" in config:
         environment_vars = config["env-variables"]
