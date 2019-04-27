@@ -5,7 +5,14 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-/app/buildlogs
+/app/buildlogs/*
+
+/wrapper/__pycache__
+/wrapper/myscript.egg-info
+/wrapper/wrap.egg-info
+.vscode
+*.pyc
+*.out
 
 # Runtime data
 pids

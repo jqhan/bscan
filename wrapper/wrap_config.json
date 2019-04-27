@@ -1,0 +1,13 @@
+{
+    "api_endpoint": "http://localhost:8989/api/buildLog/add", 
+    "env-variables": [
+        "CC"
+    ],
+    "versions": [
+        "gcc",
+        "g++"
+    ],
+    "dependency-commands": [
+        "gcc -M *.c"
+    ]
+}
