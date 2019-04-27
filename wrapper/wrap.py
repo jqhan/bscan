@@ -60,9 +60,12 @@ def extract_environment_vars(environment_vars):
 
 # Run all of the commands defined in the config and passed to the wrap
 def run_commands(command, config):
+    com_str = (' ').join(command).strip()
+    print("ASDASDASDSA")
+    print(com_str)
     results = {
         "time": -1,
-        "command": (', ').join(command).strip(),
+        "command": (' ').join(command).strip(),
         "output": "",
         "user": "",
         "env": [],
@@ -113,7 +116,7 @@ def run_commands(command, config):
 
 # entrypoint method for the wrap
 def run():
-
+    print("TESTSTETS")
     config = read_config()
     if "env-variables" in config:
         environment_vars = config["env-variables"]
