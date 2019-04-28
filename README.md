@@ -27,3 +27,11 @@ To install all dependencies, run the following in the root directory of the proj
 ./install.sh
 ```
 
+### How to use
+
+#### Server
+in bscan/server/: ``` npm start ```
+
+#### bscan build wrapper
+
+
