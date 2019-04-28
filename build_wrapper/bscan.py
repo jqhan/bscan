@@ -1,4 +1,3 @@
-
 import os
 import sys
 import subprocess
@@ -8,10 +7,11 @@ import requests
 import time
 
 
-# Tries to read config file, if it can't find one, return a default config based on c-compilation
+# Tries to read config file.
+# If it can't find one, return a default config based on c-compilation
 def read_config():
     try:
-        file = open("wrap_config.json", 'r')
+        file = open("bscan_config.json", 'r')
         if file.mode != 'r':
             return config
         return json.loads(file.read())
@@ -30,7 +30,7 @@ def read_config():
             ]
         }
 
-#perform POST request with results to the server
+#perform POST request with build data to the server
 def post_results(results, API_ENDPOINT):
 
     post_request = {
@@ -62,7 +62,7 @@ def extract_environment_vars(environment_vars):
 
     return vars
 
-# Run all of the commands defined in the config and passed to the wrap
+# Run all of the commands defined in the config and passed to the build wrapper
 def run_commands(command, config):
     results = {
         "time": -1,
@@ -118,7 +118,7 @@ def run_commands(command, config):
 
     return results
 
-# entrypoint method for the wrap
+# entrypoint method for the build wrapper
 def run():
     config = read_config()
     if "env-variables" in config:

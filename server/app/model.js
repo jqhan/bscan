@@ -78,7 +78,6 @@ exports.getWeeklyChartDataCombinedAverage = () => {
     var date = new Date();
     for (var i = 0; i < 7; i++) {
         var dateStr = date.toISOString().slice(0, 10);
-        console.log(dateStr);
         data.push(this.getAverageBuildTimeByDate(dateStr));
         labels.push(dateStr);
         date.setDate(date.getDate() - 1);
@@ -100,7 +99,6 @@ exports.getWeeklyChartDataIndividualAverage = () => {
     });
     var self = this; // Context is different in forEach anon func
     users.forEach(function(user) {
-        console.log(user);
         var avg = self.getAverageBuildTimeByUser(user);
         data.push(avg);
         labels.push(user);
