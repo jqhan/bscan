@@ -30,8 +30,46 @@ To install all dependencies, run the following in the root directory of the proj
 ### How to use
 
 #### Server
-in bscan/server/: ``` npm start ```
+To start server, run from root directory in the project:  
+```
+cd server/ && npm start 
+```
 
 #### bscan build wrapper
+The build scan wrapper is meant to be used in conjunction with another command. Example:
+```
+bscan gcc hello_world.c -o hello_world.out
+```
+Running this command will by default push a json object containing:
+* the date/time
+* user (return by the command "whoami")
+* the environment variable CC if it is set
+* the version of gcc on the machine
+* the dependencies (returned by the command "gcc -M ../sample_programs/*.c")
+* the command passed to the wrapper and the output of it
+* the time the command took in seconds
+So by default the wrapper is focused on C compilation and environment related to that. 
 
+The wrapper can however be configured using the bscan_config.json found in the folder 'build_wrapper'. In it you can configure: 
+* which endpoint the api is hosted on
+* which environment variables you want to push
+* which command to fetch dependencies you want to run. 
 
+The config file needs to be in the same folder as the running of bscan takes place in. 
+Otherwise the bscan will default to using the following config:
+```json
+{
+    "api_endpoint": "http://localhost:8989/api/buildLog/add",
+    "env-variables": [
+        "CC"
+    ],
+    "versions": [
+        "gcc",
+    ],
+    "dependency-commands": [
+        "gcc -M ../sample_programs/*.c"
+    ]
+}
+```
+
+Once the bscan wrapper has pushed the json object, it should respond with a url to the log of the command. 

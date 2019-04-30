@@ -16,7 +16,7 @@ def read_config():
             return config
         return json.loads(file.read())
     except:
-        print("Did not find any config file, using default")
+        print("Bscan wrapper: Did not find any config file, using default")
         return {
             "api_endpoint": "http://localhost:8989/api/buildLog/add",
             "env-variables": [
@@ -143,13 +143,13 @@ def run():
         r = post_results(results, "http://localhost:8989/api/buildLog/add")
 
     if r.status_code == 200:
-        print("------------------------------------Build wrapper------------------------------------")
+        print("------------------------------------Bscan wrapper------------------------------------")
         print("Server responded: " + str(r.status_code))
         print("log has been pushed!")
         print("url to your build log: " + json.loads(r.content)['url'])
         print("-------------------------------------------------------------------------------------")
     else:
-        print("------------------------------------Build wrapper------------------------------------")
+        print("------------------------------------Bscan wrapper------------------------------------")
         print("Server responded: " + str(r.status_code))
         print("ERROR")
         print("message: " + str(r.content))
