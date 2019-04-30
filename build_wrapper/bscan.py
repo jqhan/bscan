@@ -73,19 +73,24 @@ def run_commands(command, config):
         "dependencies": []
     }
     start = time.time()
-    output = subprocess.run(command, stdout=subprocess.PIPE, shell=False,
+    if len(command) > 0:
+        output = subprocess.run(command, stdout=subprocess.PIPE, shell=False,
                             stderr=subprocess.PIPE, universal_newlines=True)
-    end = time.time()
-    results["time"] = round(end-start, 4)
+        end = time.time()
+        results["time"] = round(end-start, 4)
 
-    if output.returncode == 0:
-        print(output.stdout)
-        results["output"] = str(output.stdout)
-        results["succeeded"] = True
+        if output.returncode == 0:
+            print(output.stdout)
+            results["output"] = str(output.stdout)
+            results["succeeded"] = True
+        else:
+            results["output"] = str(output.stderr)
+            results["succeeded"] = False
+            print(output.stderr)
     else:
-        results["output"] = str(output.stderr)
-        results["succeeded"] = False
-        print(output.stderr)
+        print("Bscan wrapper: no command given, exiting program")
+        exit()
+
 
     whoami = subprocess.run(['whoami'], stdout=subprocess.PIPE, shell=False,
                             stderr=subprocess.PIPE, universal_newlines=True)
