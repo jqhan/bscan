@@ -146,7 +146,8 @@ def run():
         print("------------------------------------Bscan wrapper------------------------------------")
         print("Server responded: " + str(r.status_code))
         print("log has been pushed!")
-        print("url to your build log: " + str(json.loads(r.content)['url']))
+        #print(r.json())
+        print("url to your build log: " + (r.json())['url'])
         print("-------------------------------------------------------------------------------------")
     else:
         print("------------------------------------Bscan wrapper------------------------------------")
