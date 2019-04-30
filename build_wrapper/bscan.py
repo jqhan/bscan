@@ -46,7 +46,6 @@ def post_results(results, API_ENDPOINT):
     }
 
     json_obj = json.loads(json.dumps(post_request))
-
     r = requests.post(url=API_ENDPOINT, json=json_obj, headers={
         "content-type": "application/json"})
     return r
@@ -74,10 +73,9 @@ def run_commands(command, config):
         "dependencies": []
     }
     start = time.time()
-    output = subprocess.run(command, stdout=subprocess.PIPE, shell=True,
+    output = subprocess.run(command, stdout=subprocess.PIPE, shell=False,
                             stderr=subprocess.PIPE, universal_newlines=True)
     end = time.time()
-
     results["time"] = round(end-start, 4)
 
     if output.returncode == 0:
@@ -89,14 +87,18 @@ def run_commands(command, config):
         results["succeeded"] = False
         print(output.stderr)
 
-    whoami = subprocess.run('whoami', stdout=subprocess.PIPE, shell=True,
+    whoami = subprocess.run(['whoami'], stdout=subprocess.PIPE, shell=False,
                             stderr=subprocess.PIPE, universal_newlines=True)
     if whoami.returncode == 0:
-        results["user"] = str(whoami.stdout[:-1])
+        if (str(whoami.stdout)).find('\\', 0, len(whoami.stdout)) > -1:
+            results["user"] = ((str(whoami.stdout)).split('\\'))[len((str(whoami.stdout)).split('\\'))-1].replace('\n', '')
+        else:
+            results["user"] = (str(whoami.stdout)).replace('\n', '')
+
 
     if "versions" in config:
         for x in config["versions"]:
-            version = subprocess.run(x + ' --version', shell=True, stdout=subprocess.PIPE,
+            version = subprocess.run([x, ' --version'], shell=False, stdout=subprocess.PIPE,
                                      stderr=subprocess.PIPE, universal_newlines=True)
             if version.returncode == 0:
                 results["env"].append(
@@ -107,8 +109,7 @@ def run_commands(command, config):
 
     if "dependency-commands" in config:
         for x in config["dependency-commands"]:
-            dep = subprocess.run(x, shell=True, stdout=subprocess.PIPE,
-                                 stderr=subprocess.PIPE, universal_newlines=True)
+            dep = subprocess.run(x.split(' '), shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
             if dep.returncode == 0:
                 results["dependencies"].append(
                     {x: str(dep.stdout)})
