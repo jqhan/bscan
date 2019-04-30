@@ -22,6 +22,7 @@ There's no logic implemented for authenticating the requests to the server. If y
 The following are required to be able to run this project
 * [python 3.7](https://www.python.org/downloads/)
 * [node](https://nodejs.org/en/)
+* [pip](https://pypi.org/project/pip/)
 
 To install all dependencies, run the following in the root directory of the project:
 ```
