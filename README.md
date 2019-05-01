@@ -10,8 +10,13 @@ bscan is a lightweight build scan tool/build wrapper that captures the data abou
 We're inspired by the [build scans](https://gradle.com/build-scans/) that Gradle enterprise supports and we intend to create something similar that's not only for gradle. The wrapper is currently limited to gcc. It'll capture the command, environment variables, dependencies and the gcc output. It will also serve as a build time logging tool where you can see the average build times, visualized as charts. This can provide valuable insights. Every build scan will be pushed to a Node.js web server which stores them in its file system. Vue and bootstrap is used for front-end.
 
 
-![Components](diagram.png)
+![Build time statistics](diagram1.png)
 
+![Build time statistics](diagram2.png)
+
+![List of build logs](main.png)
+
+![Build log view](buildlog.png)
 
 ### NOTICE
 There's no logic implemented for authenticating the requests to the server. If you don't want to risk receiving bad requests, make your server inaccessible from outside your network.
