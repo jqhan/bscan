@@ -6,9 +6,9 @@ Vue.component('route-buildLogList', {
         }
     },
     methods: {
-        redirect(buildLog) {
+        redirect(id) {
             this.$router.push({
-                path: `/buildLog/${buildLog.id}`
+                path: `/buildLog/${id}`
             });
         }
     },
@@ -29,11 +29,16 @@ Vue.component('route-buildLogList', {
 							buildLog.date;
             this.dataTable.row.add([
 				'<a href="javascript:void(0)">' + buildLogName + '</a>',
+                buildLog.id,
 				buildLog.user,
 				buildLog.date
             ]).draw(false);
-        })
-        console.log(this);
+        });
+        var self = this;
+        $("table").on("click", "tr", function(e) {
+            var data = self.dataTable.row(this).data();
+            self.redirect(data[1]);
+        });
     },
     mounted() {},
     template: `
@@ -42,11 +47,12 @@ Vue.component('route-buildLogList', {
 			<thead>
 				<tr>
 					<th class="th-sm">Log</th>
+                    <th class="th-sm">ID</th>
 					<th class="th-sm">User</th>
 					<th class="th-sm">Date</th>
 				</tr>
 			</thead>
-			<tbody v-for="buildLog in buildLogs" v-on:click="redirect(buildLog)">
+			<tbody v-for="buildLog in buildLogs" >
 			</tbody>
 		</table>	
 	</div>
